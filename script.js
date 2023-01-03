@@ -114,31 +114,23 @@ compareDates.addEventListener("click", async function (e) {
 
   dollarColumn.innerHTML = `
   <th scope="row">&nbsp;$</th>
-  <td>${NumberWithCommas(usdAmount1)} $ <strong>|</strong> $: ${usdPrice1}</td>
-  <td>${NumberWithCommas(usdAmount2)} $ <strong>|</strong> $: ${usdPrice2}</td>
+  <td>${NumberWithCommas(usdAmount1)} $<br />$: ${usdPrice1}</td>
+  <td>${NumberWithCommas(usdAmount2)} $<br />$: ${usdPrice2}</td>
   <td>${usdAmountChange} %</td>
   `;
 
   goldColumn.innerHTML = `
-  <th scope="row">🪙</th>
-  <td>${NumberWithCommas(
-    goldAmount1
-  )} gr <strong>|</strong> 🪙: ${goldPrice1}</td>
-  <td>${NumberWithCommas(
-    goldAmount2
-  )} gr <strong>|</strong> 🪙: ${goldPrice2}</td>
+  <th scope="row">🥇</th>
+  <td>${NumberWithCommas(goldAmount1)} gr<br />🥇: ${goldPrice1}</td>
+  <td>${NumberWithCommas(goldAmount2)} gr<br />🥇: ${goldPrice2}</td>
 
   <td>${goldAmountChange} %</td>
   `;
 
   wageColumn.innerHTML = `
   <th scope="row">👷🏻</th>
-  <td>${NumberWithCommas(
-    minWageAmount1
-  )} x <strong>|</strong> 👷🏻: ${minWagePrice1}</td>
-  <td>${NumberWithCommas(
-    minWageAmount2
-  )} x <strong>|</strong> 👷🏻: ${minWagePrice2}</td>
+  <td>${NumberWithCommas(minWageAmount1)} x<br />👷🏻: ${minWagePrice1}</td>
+  <td>${NumberWithCommas(minWageAmount2)} x<br />👷🏻: ${minWagePrice2}</td>
   <td>${minWageAmountChange} %</td>
   `;
 });
