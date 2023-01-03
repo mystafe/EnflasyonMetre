@@ -1,4 +1,4 @@
-//a = document.getElementById("numbers").value;
+//const bootstrap = require("bootstrap");
 
 compareDates = document.getElementById("compareDates");
 timeColumn = document.getElementById("timeColumn");
