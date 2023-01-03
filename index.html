@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="./node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.3/xlsx.full.min.js"
+    ></script>
+    <title>Enflasyon Metre</title>
+  </head>
+  <body class="bg-dark">
+    <div class="row">
+      <div class="col-12">
+        <div class="m-5 p-3 border bg-dark">
+          <form action="">
+            <div class="input-group mb-3">
+              <input
+                type="month"
+                class="form-control"
+                placeholder="First Year"
+                aria-label="First Year"
+                name="firstYear"
+                value="2022-11"
+                id="firstYear"
+              />
+              <input
+                type="month"
+                class="form-control"
+                placeholder="Second Year"
+                aria-label="Second Year"
+                name="secondYear"
+                value="2008-01"
+                id="secondYear"
+              />
+            </div>
+
+            <div class="input-group mb-3">
+              <input
+                class="form-control"
+                type="number"
+                id="amount"
+                name="amount"
+                value="1000"
+                placeholder="Amount"
+              />
+              <span class="input-group-text">₺</span>
+            </div>
+
+            <button class="btn btn-primary" id="compareDates">Check</button>
+          </form>
+
+          <table class="table my-5 table-success table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Currency</th>
+                <th scope="col">First Year</th>
+                <th scope="col">Second Year</th>
+                <th scope="col">Change</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="timeColumn">
+                <th scope="row">⌚</th>
+                <td>2022-11</td>
+                <td>2008-01</td>
+                <td>14 years</td>
+              </tr>
+              <tr id="liraColumn">
+                <th scope="row">&nbsp;₺</th>
+                <td>1,000 ₺</td>
+                <td>131.8 ₺</td>
+                <td>659.0 %</td>
+              </tr>
+              <tr id="dollarColumn">
+                <th scope="row">&nbsp;$</th>
+                <td>53.7 $</td>
+                <td>112.1 $</td>
+                <td>1483.7 %</td>
+              </tr>
+              <tr id="goldColumn">
+                <th scope="row">🪙</th>
+                <td>1.0 gr</td>
+                <td>4.0 gr</td>
+                <td>3104.0 %</td>
+              </tr>
+              <tr id="wageColumn">
+                <th scope="row">👷🏻</th>
+                <td colspan="1">0.2 m</td>
+                <td>0.3 m</td>
+                <td>1042.2 %</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div id="excelUpload" class="bg-dark m-5">
+            <input
+              class="form-control"
+              type="file"
+              id="fileUpload"
+              accept=".xls,.xlsx"
+            />
+            <br />
+            <div class="btn btn-primary" id="convertButton">Convert</div>
+            <div
+              style="visibility: hidden"
+              class="btn btn-success"
+              id="copyButton"
+            >
+              Copy
+            </div>
+            <div
+              style="visibility: hidden"
+              class="btn btn-danger"
+              id="clearButton"
+            >
+              Clear
+            </div>
+
+            <div class="md-12 bg-dark">
+              <pre id="jsonData" class="bg-dark text-white mt-5"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="script.js"></script>
+  <style>
+    *,
+    body {
+      box-sizing: border-box;
+    }
+  </style>
+</html>
