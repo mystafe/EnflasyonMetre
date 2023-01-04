@@ -89,6 +89,11 @@
     scroll-behavior: smooth;
   }
 }
+
+#reverseButton:hover {
+  background-color: rgb(212, 206, 206) !important;
+  cursor: pointer !important;
+}
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);

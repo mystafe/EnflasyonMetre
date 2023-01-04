@@ -28,15 +28,28 @@ TimeDetection = (date) => {
 
 document.getElementById("amount1").addEventListener("change", async (e) => {
   e.preventDefault();
-  console.log("logs");
   CompareFunction(document.getElementById("amount1").value, true);
 });
 
 document.getElementById("amount2").addEventListener("change", async (e) => {
   e.preventDefault();
-  console.log("logs");
   CompareFunction(document.getElementById("amount2").value, false);
 });
+
+document.getElementById("reverseButton").addEventListener("click", (e) => {
+  e.preventDefault();
+  liraPrice1 = document.getElementById("amount2").value;
+  liraPrice2 = document.getElementById("amount1").value;
+  year1 = document.getElementById("secondYear").value;
+  year2 = document.getElementById("firstYear").value;
+  document.getElementById("firstYear").value = year1;
+  document.getElementById("secondYear").value = year2;
+
+  document.getElementById("amount1").value = liraPrice1;
+  document.getElementById("amount2").value = liraPrice2;
+  CompareFunction(liraPrice1, true);
+});
+
 CompareFunction = async function (lira, isFirst) {
   timeSlot1 = TimeDetection(firstYear.value);
   timeSlot2 = TimeDetection(secondYear.value);
@@ -53,17 +66,12 @@ CompareFunction = async function (lira, isFirst) {
     time2 = await FetchDataByDate(date2);
   }
 
-  console.log("first Price:" + liraPrice1);
-  console.log("lira: " + lira);
-
   if (isFirst) {
     liraPrice1 = lira;
     liraPrice2 = parseFloat(await ConvertLira(lira, time1, time2)).toFixed(1);
-    console.log("click1");
   } else {
     liraPrice2 = lira;
     liraPrice1 = parseFloat(await ConvertLira(lira, time2, time1)).toFixed(1);
-    console.log("click2");
   }
 
   if (timeCheck1 && timeCheck2) {
@@ -273,12 +281,12 @@ CompareFunction = async function (lira, isFirst) {
   <th>🪙</th>
   <td>${NumberWithCommas(
     goldAmount1
-  )}gr <br /><strong><i class="text-muted">${goldPrice1} ${
+  )} gr <br /><strong><i class="text-muted">${goldPrice1} ${
     timeSlot1 > 3 ? "₺" : "TL"
   }</i></strong></td>
   <td>${NumberWithCommas(
     goldAmount2
-  )}gr <br /><strong><i class="text-muted">${goldPrice2} ${
+  )} gr <br /><strong><i class="text-muted">${goldPrice2} ${
     timeSlot2 > 3 ? "₺" : "TL"
   }</i></strong></td>
   <td>${goldDifText}</td>
@@ -332,6 +340,7 @@ TimeDifference = async function (date1, date2) {
 };
 
 LiraDifference = async function (date1, date2) {
+  //timeCheck1
   const date01 = await FetchDataByDate(date1);
   const date02 = await FetchDataByDate(date2);
   const dif = date01.InflationIndex / date02.InflationIndex;
@@ -341,10 +350,8 @@ LiraDifference = async function (date1, date2) {
 //error handling
 ConvertLira = async function (lira, date1, date2) {
   const price = (lira / date1.InflationIndex) * date2.InflationIndex;
-  if (timeSlot1 > 3 && timeSlot2 > 3) {
-    console.log(price);
-    return price;
-  } else if (timeSlot1 > 3) return price * 1000000;
+  if (timeSlot1 > 3 && timeSlot2 > 3) return price;
+  else if (timeSlot1 > 3) return price * 1000000;
   else if (timeSlot2 > 3) return price / 1000000;
   return price;
 };
