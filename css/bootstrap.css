@@ -90,7 +90,7 @@
   }
 }
 
-#reverseButton:hover {
+.reverseButton:hover {
   background-color: rgb(212, 206, 206) !important;
   cursor: pointer !important;
 }

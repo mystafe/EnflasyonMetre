@@ -28,6 +28,9 @@
                 max="2023-01"
                 id="firstYear"
               />
+
+              <btn id="reverseButtonDate" class="reverseButton bnt input-group-text">🔄</btn>
+
               <input
                 type="month"
                 class="form-control"
@@ -50,7 +53,7 @@
                 value="1000"
                 placeholder="Miktar"
               />
-              <btn id="reverseButton" class="bnt input-group-text">🔄</btn>
+              <btn id="reverseButtonAmount" class="reverseButton bnt input-group-text">🔄</btn>
               <input
               class="form-control"
               type="number"
@@ -61,23 +64,11 @@
             />
             </div>
             <div class=" row px-3">
-              <div class="col col-md-6 px-3">
-                <div class="row">
-                  <button class="btn btn-primary btn-block" id="compareDates1">
-                    ⇖ Karşılaştır ⇖
-                  </button>
-                </div>
-              </div>
-              <div class="col col-md-6">
-                <div class="row">
-                  <button class="btn btn-primary btn-block" id="compareDates2">
-                    ⇗ Karşılaştır ⇗
-                  </button>
-                </div>
+              <button class="btn btn-primary" id="compareDates">Karşılaştır</button>
               </div>
              
     
-            </div>
+            
           </form>
 
           <table class="table mt-5 table-success table-striped">

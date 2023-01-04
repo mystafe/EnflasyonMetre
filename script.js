@@ -1,5 +1,4 @@
-compareDates1 = document.getElementById("compareDates1");
-compareDates2 = document.getElementById("compareDates2");
+compareDates = document.getElementById("compareDates");
 timeColumn = document.getElementById("timeColumn");
 liraColumn = document.getElementById("liraColumn");
 dollarColumn = document.getElementById("dollarColumn");
@@ -36,17 +35,28 @@ document.getElementById("amount2").addEventListener("change", async (e) => {
   CompareFunction(document.getElementById("amount2").value, false);
 });
 
-document.getElementById("reverseButton").addEventListener("click", (e) => {
+document
+  .getElementById("reverseButtonAmount")
+  .addEventListener("click", (e) => {
+    e.preventDefault();
+    liraPrice1 = document.getElementById("amount2").value;
+    liraPrice2 = document.getElementById("amount1").value;
+
+    document.getElementById("amount1").value = liraPrice1;
+    document.getElementById("amount2").value = liraPrice2;
+    CompareFunction(liraPrice1, true);
+  });
+
+document.getElementById("reverseButtonDate").addEventListener("click", (e) => {
   e.preventDefault();
-  liraPrice1 = document.getElementById("amount2").value;
-  liraPrice2 = document.getElementById("amount1").value;
+  liraPrice1 = document.getElementById("amount1").value;
+
   year1 = document.getElementById("secondYear").value;
   year2 = document.getElementById("firstYear").value;
+
   document.getElementById("firstYear").value = year1;
   document.getElementById("secondYear").value = year2;
 
-  document.getElementById("amount1").value = liraPrice1;
-  document.getElementById("amount2").value = liraPrice2;
   CompareFunction(liraPrice1, true);
 });
 
@@ -308,14 +318,9 @@ CompareFunction = async function (lira, isFirst) {
   `;
 };
 
-compareDates1.addEventListener("click", async function (e) {
+compareDates.addEventListener("click", async function (e) {
   e.preventDefault();
   CompareFunction(document.getElementById("amount1").value, true);
-});
-
-compareDates2.addEventListener("click", async function (e) {
-  e.preventDefault();
-  CompareFunction(document.getElementById("amount2").value, false);
 });
 
 TimeDifference = async function (date1, date2) {
