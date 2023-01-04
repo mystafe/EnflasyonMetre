@@ -7,68 +7,92 @@ euroColumn = document.getElementById("euroColumn");
 wageColumn = document.getElementById("wageColumn");
 firstYear = document.getElementById("firstYear");
 secondYear = document.getElementById("secondYear");
-liraPrice = document.getElementById("amount").value;
+liraPrice1 = document.getElementById("amount").value;
 
+let norm1, norm2, norm3, norm4;
 compareDates.addEventListener("click", async function (e) {
   e.preventDefault();
-  liraPrice = document.getElementById("amount").value;
+
   date1 = firstYear.value;
   date2 = secondYear.value;
-  const checkTurningPoint = await TurningPointCheck(date1, date2);
+  liraPrice1 = document.getElementById("amount").value;
+
+  time1 = await FetchDataByDate(date1);
+  time2 = await FetchDataByDate(date2);
+
   const timeDif = await TimeDifference(date1, date2);
-  const priceDif = parseFloat(
-    -100 * (await LiraDifference(date1, date2)) - 100
-  ).toFixed(2);
+  let newLiraCheck;
+  let euroCheck;
 
-  const liraPrice2 = parseFloat(await ConvertLira(date1, date2)).toFixed(1);
+  try {
+    if (time1.FullDate > 38352 && time2.FullDate > 38352) newLiraCheck = 1;
+    else if (time1.FullDate > 38352 && time2.FullDate < 38352) newLiraCheck = 2;
+    else if (time1.FullDate < 38352 && time2.FullDate > 38352) newLiraCheck = 3;
+    else newLiraCheck = 0;
 
-  const normalLira = liraPrice2 / checkTurningPoint;
-  console.log(normalLira);
+    if (time1.FullDate > 36160 && time2.FullDate > 36160) euroCheck = 1;
+    else if (time1.FullDate > 36160 && time2.FullDate < 36160) euroCheck = 2;
+    else if (time1.FullDate < 36160 && time2.FullDate > 36160) euroCheck = 3;
+    else euroCheck = 0;
+  } catch (error) {
+    console.log(error);
+  }
+
+  norm1 = newLiraCheck > 0 && newLiraCheck < 3;
+  norm2 = newLiraCheck % 2 == 1;
+  norm3 = euroCheck > 0 && euroCheck < 3;
+  norm4 = euroCheck % 2 == 1;
+
+  const checkTurningPoint = await TurningPointCheck(norm1, norm2);
+
+  let liraPrice2 = parseFloat(await ConvertLira(time1, time2)).toFixed(1);
+  const normalLira1 = norm1 ? liraPrice1 : liraPrice1 / 1000000;
+  const normalLira2 = norm2 ? liraPrice2 : liraPrice2 / 1000000;
+
   const liraAmountChange =
     checkTurningPoint > 1
-      ? parseFloat(((normalLira - liraPrice) / liraPrice) * 100).toFixed(4)
+      ? parseFloat(((normalLira2 - normalLira1) / normalLira1) * 100).toFixed(4)
       : parseFloat(
           (1 / checkTurningPoint) *
-            (((liraPrice2 - liraPrice) / liraPrice) * 100)
+            (((normalLira2 - normalLira1) / normalLira1) * 100)
         ).toFixed(2);
 
   //euro calculate problem 2000
 
-  const usdPrice1 = NumberWithCommas(
-    parseFloat(await CalculateDollar(date1)).toFixed(2)
-  );
-  const usdPrice2 = NumberWithCommas(
-    parseFloat(await CalculateDollar(date2)).toFixed(2)
-  );
+  const usdPrice1 = NumberWithCommas(parseFloat(time1.USDTRY).toFixed(2));
+  const usdPrice2 = NumberWithCommas(parseFloat(time2.USDTRY).toFixed(2));
 
-  const usdAmount1 = parseFloat(await ConvertDollar(liraPrice, date1)).toFixed(
-    1
-  );
-  const usdAmount2 = parseFloat(await ConvertDollar(liraPrice2, date2)).toFixed(
-    1
-  );
+  const usdAmount1 = parseFloat(liraPrice1 / time1.USDTRY).toFixed(1);
+  const usdAmount2 = parseFloat(liraPrice2 / time2.USDTRY).toFixed(1);
 
   const usdAmountChange = parseFloat(
     ((usdAmount1 - usdAmount2) / usdAmount1) * 100
   ).toFixed(2);
 
-  const eurPrice1 = NumberWithCommas(
-    parseFloat(await CalculateEuro(date1)).toFixed(2)
-  );
-  const eurPrice2 = NumberWithCommas(
-    parseFloat(await CalculateEuro(date2)).toFixed(2)
-  );
+  const eurPrice1 = norm3
+    ? NumberWithCommas(parseFloat(time1.EURTRY).toFixed(2))
+    : "";
+  const eurPrice2 = norm4
+    ? NumberWithCommas(parseFloat(time2.EURTRY).toFixed(2))
+    : "";
 
-  const eurAmount1 = parseFloat(await ConvertEuro(liraPrice, date1)).toFixed(1);
-  const eurAmount2 = parseFloat(await ConvertEuro(liraPrice2, date2)).toFixed(
-    1
-  );
+  const eurAmount1 = norm3
+    ? parseFloat(liraPrice1 / time1.EURTRY).toFixed(1)
+    : 0;
+  const eurAmount2 = norm4
+    ? parseFloat(liraPrice2 / time2.EURTRY).toFixed(1)
+    : 0;
 
-  const eurAmountChange = parseFloat(
+  const eurAmountChange =
+    norm3 || norm4
+      ? parseFloat(((eurAmount1 - eurAmount2) / eurAmount1) * 100).toFixed(2)
+      : 0;
+
+  const eurAmountChange1 = parseFloat(
     ((eurAmount1 - eurAmount2) / eurAmount1) * 100
   ).toFixed(2);
 
-  const goldAmount1 = parseFloat(await ConvertGold(liraPrice, date1)).toFixed(
+  const goldAmount1 = parseFloat(await ConvertGold(liraPrice1, date1)).toFixed(
     2
   );
   const goldAmount2 = parseFloat(await ConvertGold(liraPrice2, date2)).toFixed(
@@ -91,14 +115,14 @@ compareDates.addEventListener("click", async function (e) {
   ).toFixed(2);
 
   const minWageAmount1 = parseFloat(
-    await ConvertMinWage(liraPrice, date1)
+    await ConvertMinWage(liraPrice1, date1)
   ).toFixed(2);
 
   const minWageAmount2 = parseFloat(
     await ConvertMinWage(liraPrice2, date2)
   ).toFixed(2);
 
-  const minWageAmountFull1 = await ConvertMinWage(liraPrice, date1);
+  const minWageAmountFull1 = await ConvertMinWage(liraPrice1, date1);
 
   const minWageAmountFull2 = await ConvertMinWage(liraPrice2, date2);
 
@@ -127,8 +151,8 @@ compareDates.addEventListener("click", async function (e) {
   liraColumn.innerHTML = `
 
   <th scope="row">Lira</th>
-  <td>${NumberWithCommas(liraPrice)} ₺</td>
-  <td>${NumberWithCommas(liraPrice2)} ${checkTurningPoint > 1 ? "TL" : "₺"}</td>
+  <td>${NumberWithCommas(liraPrice1)} ${norm1 ? "₺" : "TL"}</td>
+  <td>${NumberWithCommas(liraPrice2)} ${norm2 ? "₺" : "TL"}</td>
   <td>${liraAmountChange} %</td>  
   `;
 
@@ -136,10 +160,10 @@ compareDates.addEventListener("click", async function (e) {
   <tr id="dollarColumn">
   <th scope="row">Dolar</th>
   <td>${NumberWithCommas(usdAmount1)} $<br /><strong>$</strong>➡${usdPrice1} ${
-    checkTurningPoint > 1 ? "TL" : "₺"
+    norm1 ? "₺" : "TL"
   }</td>
   <td>${NumberWithCommas(usdAmount2)} $<br /><strong>$</strong>➡${usdPrice2} ${
-    checkTurningPoint > 1 ? "TL" : "₺"
+    norm2 ? "₺" : "TL"
   }</td>
   <td>${usdAmountChange} %</td>
   `;
@@ -147,11 +171,15 @@ compareDates.addEventListener("click", async function (e) {
   euroColumn.innerHTML = `
   <tr id="euroColumn">
   <th scope="row">Euro</th>
-  <td>${NumberWithCommas(eurAmount1)} €<br /><strong>€</strong>➡${eurPrice1} ${
-    checkTurningPoint > 1 ? "TL" : "₺"
+  <td>${
+    norm3 ? NumberWithCommas(eurAmount1) + " € <br /><strong>€</strong>➡" : ""
+  }${norm3 ? eurPrice1 : ""} ${norm3 && norm1 ? "₺" : ""}${
+    norm3 && !norm1 ? "TL" : ""
   }</td>
-  <td>${NumberWithCommas(eurAmount2)} €<br /><strong>€</strong>➡${eurPrice2} ${
-    checkTurningPoint > 1 ? "TL" : "₺"
+  <td>${
+    norm4 ? NumberWithCommas(eurAmount2) + " € <br /><strong>€</strong>➡" : ""
+  }${norm4 ? eurPrice2 : ""} ${norm4 && norm1 ? "₺" : ""}${
+    norm4 && !norm1 ? "TL" : ""
   }</td>
   <td>${eurAmountChange} %</td>
   `;
@@ -159,10 +187,10 @@ compareDates.addEventListener("click", async function (e) {
   goldColumn.innerHTML = `
   <th scope="row">Altın</th>
   <td>${NumberWithCommas(goldAmount1)}gr <br />🪙➡${goldPrice1} ${
-    checkTurningPoint > 1 ? "TL" : "₺"
+    norm1 ? "₺" : "TL"
   }</td>
   <td>${NumberWithCommas(goldAmount2)}gr <br />🪙➡${goldPrice2} ${
-    checkTurningPoint > 1 ? "TL" : "₺"
+    norm2 ? "₺" : "TL"
   }</td>
   <td>${goldAmountChange} %</td>
   `;
@@ -170,10 +198,10 @@ compareDates.addEventListener("click", async function (e) {
   wageColumn.innerHTML = `
   <th scope="row">Asgari Ücret</th>
   <td>${NumberWithCommas(minWageAmount1)}× <br />👷🏻➡${minWagePrice1} ${
-    checkTurningPoint > 1 ? "TL" : "₺"
+    norm1 ? "₺" : "TL"
   }</td>
   <td>${NumberWithCommas(minWageAmount2)}× <br />👷🏻➡${minWagePrice2} ${
-    checkTurningPoint > 1 ? "TL" : "₺"
+    norm2 ? "₺" : "TL"
   }</td>
   <td>${minWageAmountChange} %</td>
   `;
@@ -182,7 +210,14 @@ compareDates.addEventListener("click", async function (e) {
 TimeDifference = async function (date1, date2) {
   const date01 = await FetchDataByDate(date1);
   const date02 = await FetchDataByDate(date2);
-  const dif = Math.abs(date01.FullDate - date02.FullDate);
+
+  let dif;
+  try {
+    dif = Math.abs(date01.FullDate - date02.FullDate);
+  } catch (error) {
+    console.log(error);
+  }
+
   let dif2;
 
   if (dif > 730) {
@@ -205,32 +240,19 @@ LiraDifference = async function (date1, date2) {
 
   return dif;
 };
-
+//error handling
 ConvertLira = async function (date1, date2) {
-  const date01 = await FetchDataByDate(date1);
-  const date02 = await FetchDataByDate(date2);
-  let price;
-  price = (liraPrice / date01.InflationIndex) * date02.InflationIndex;
-
-  if (date01.FullDate > 38322 && date02.FullDate <= 38322) {
-    price *= 1000000;
-    console.log("many zeros");
-  }
+  const price = (liraPrice1 / date1.InflationIndex) * date2.InflationIndex;
+  if (norm1 && norm2) return price;
+  else if (norm1) return price * 1000000;
+  else if (norm2) return price / 1000000;
   return price;
 };
 
-TurningPointCheck = async function (date1, date2) {
-  const date01 = await FetchDataByDate(date1);
-  const date02 = await FetchDataByDate(date2);
-  try {
-    if (date01.FullDate > 38322 && date02.FullDate <= 38322) {
-      return 1000000;
-    }
-  } catch (error) {
-    console.log(error);
-  }
+TurningPointCheck = function (val1, val2) {
+  if (val1 && val2) return 1;
 
-  return 1;
+  return 1000000;
 };
 
 CalculateDollar = async function (date1) {
@@ -311,3 +333,5 @@ FetchDataByDate = async function (date) {
 function NumberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+//ilk ve 2. kolon değiştirilebilir..
