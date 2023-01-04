@@ -5965,6 +5965,8 @@
   {
     "Date": "2023-01",
     "FullDate": 44927,
+    "InflationIndex": 1128.42,
+    "MonthlyInflation": 0.0118,
     "minWageNetTRY": 8506.8,
     "minWageGrossTRY": 10750,
     "minWageNetUSD": 454,
