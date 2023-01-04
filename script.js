@@ -9,17 +9,9 @@ firstYear = document.getElementById("firstYear");
 secondYear = document.getElementById("secondYear");
 liraPrice1 = document.getElementById("amount").value;
 
-let liraSlot1, liraSlot2;
-1 / 5;
-
-let usdSlot1, usdSlot2;
-let eurSlot1, eurSlot2;
-let goldSlot1, goldSlot2;
-let wageSlot1, wageSlot2;
-let timeSlot1, timeSlot2;
 let timeCheck1 = false;
 let timeCheck2 = false;
-let timeDif = 0;
+let timeDif = 0; //not impl.
 
 TimeDetection = (date) => {
   if (date < "1980-01") return 1;
@@ -28,8 +20,6 @@ TimeDetection = (date) => {
   else if (date <= "2023-01") return 4;
   else return 5;
 };
-
-let norm1, norm2, norm3, norm4;
 
 compareDates.addEventListener("click", async function (e) {
   e.preventDefault();
@@ -54,13 +44,6 @@ compareDates.addEventListener("click", async function (e) {
   if (timeCheck1 && timeCheck2) {
     timeDif = await TimeDifference(date1, date2);
   }
-  let newLiraCheck;
-  let euroCheck;
-
-  norm1 = newLiraCheck > 0 && newLiraCheck < 3;
-  norm2 = newLiraCheck % 2 == 1;
-  norm3 = euroCheck > 0 && euroCheck < 3;
-  norm4 = euroCheck % 2 == 1;
 
   let liraPrice2 = parseFloat(await ConvertLira(time1, time2)).toFixed(1);
 
@@ -87,14 +70,23 @@ compareDates.addEventListener("click", async function (e) {
 
   //euro calculate problem 2000
 
-  let usdPrice1, usdAmount1, usdPrice2, usdAmount2, usdAmountChange;
-  let eurPrice1, eurAmount1, eurPrice2, eurAmount2, eurAmountChange;
-  let goldPrice1, goldAmount1, goldPrice2, goldAmount2, goldAmountChange;
-  let minWagePrice1,
-    minWageAmount1,
-    minWagePrice2,
-    minWageAmount2,
-    minWageAmountChange;
+  let usdPrice1,
+    usdAmount1,
+    usdPrice2,
+    usdAmount2,
+    usdAmountChange = 0;
+  let eurPrice1,
+    eurAmount1,
+    eurPrice2,
+    eurAmount2,
+    eurAmountChange = 0;
+  let goldPrice1,
+    goldAmount1,
+    goldPrice2,
+    goldAmount2,
+    goldAmountChange = 0;
+  let minWagePrice1, minWageAmount1, minWagePrice2, minWageAmount2;
+  let minWageAmountChange = 0;
 
   if (timeSlot1 > 1 && timeSlot1 < 5) {
     usdPrice1 = NumberWithCommas(parseFloat(time1.USDTRY).toFixed(2));
@@ -117,16 +109,32 @@ compareDates.addEventListener("click", async function (e) {
     minWageAmount2 = parseFloat(liraPrice2 / time2.minWageNetTRY).toFixed(2);
   }
   if (timeSlot1 > 1 && timeSlot1 < 5 && timeSlot2 > 1 && timeSlot2 < 5) {
-    usdAmountChange = parseFloat(
-      ((usdAmount1 - usdAmount2) / usdAmount1) * 100
-    ).toFixed(2);
-    goldAmountChange = parseFloat(
-      ((goldAmount1 - goldAmount2) / goldAmount1) * 100
-    ).toFixed(2);
+    const usdCheck = isNaN(
+      parseFloat(((usdAmount1 - usdAmount2) / usdAmount1) * 100).toFixed(2)
+    )
+      ? 0
+      : parseFloat(((usdAmount1 - usdAmount2) / usdAmount1) * 100).toFixed(2);
+    usdAmountChange = usdCheck;
 
-    minWageAmountChange = parseFloat(
-      ((minWageAmount1 - minWageAmount2) / minWageAmount1) * 100
-    ).toFixed(2);
+    const goldCheck = isNaN(
+      parseFloat(((goldAmount1 - goldAmount2) / goldAmount1) * 100).toFixed(2)
+    )
+      ? 0
+      : parseFloat(((goldAmount1 - goldAmount2) / goldAmount1) * 100).toFixed(
+          2
+        );
+    goldAmountChange = goldCheck;
+
+    const minWageCheck = isNaN(
+      parseFloat(
+        ((minWageAmount1 - minWageAmount2) / minWageAmount1) * 100
+      ).toFixed(2)
+    )
+      ? 0
+      : parseFloat(
+          ((minWageAmount1 - minWageAmount2) / minWageAmount1) * 100
+        ).toFixed(2);
+    minWageAmountChange = minWageCheck;
   }
 
   const positiveUsdCheck = usdAmount1 > usdAmount1;
@@ -144,9 +152,12 @@ compareDates.addEventListener("click", async function (e) {
     eurAmount2 = parseFloat(liraPrice2 / time2.EURTRY).toFixed(1);
   }
   if (timeSlot1 > 2 && timeSlot1 < 5 && timeSlot2 > 2 && timeSlot2 < 5) {
-    eurAmountChange = parseFloat(
-      ((eurAmount1 - eurAmount2) / eurAmount1) * 100
-    ).toFixed(2);
+    const eurCheck = isNaN(
+      parseFloat(((eurAmount1 - eurAmount2) / eurAmount1) * 100).toFixed(2)
+    )
+      ? 0
+      : parseFloat(((eurAmount1 - eurAmount2) / eurAmount1) * 100).toFixed(2);
+    eurAmountChange = eurCheck;
   }
 
   const positiveEurCheck = eurPrice1 > eurPrice2;
@@ -155,20 +166,20 @@ compareDates.addEventListener("click", async function (e) {
     eurDifText = `&nbsp;📈<br/>${Math.abs(eurAmountChange)}`;
   } else eurDifText = `&nbsp;📉<br/>${Math.abs(eurAmountChange)}`;
 
-  const positiveGolddCheck = usdAmount1 > usdAmount1;
+  const positiveGolddCheck = goldAmount1 > goldAmount2;
   let goldDifText;
   if (positiveGolddCheck) {
     goldDifText = `&nbsp;📈<br/>${Math.abs(goldAmountChange)}`;
   } else goldDifText = `&nbsp;📉<br/>${Math.abs(goldAmountChange)}`;
 
-  const positiveMinWageCheck = usdAmount1 > usdAmount1;
+  const positiveMinWageCheck = minWageAmount1 > minWageAmount2;
   let minWageDifText;
   if (positiveMinWageCheck) {
     minWageDifText = `&nbsp;📉<br/>${Math.abs(minWageAmountChange)}`;
   } else minWageDifText = `&nbsp;📈<br/>${Math.abs(minWageAmountChange)}`;
 
   timeColumn.innerHTML = `
-  <th scope="row">Zaman</th>
+  <th scope="row">⌚</th>
   <td>${date1}</td>
   <td>${date2}</td>
   <td>${timeDifText}</td>
@@ -176,19 +187,19 @@ compareDates.addEventListener("click", async function (e) {
 
   liraColumn.innerHTML = `
 
-  <th scope="row">Lira</th>
-  <td>${NumberWithCommas(liraPrice1)} ${norm1 ? "₺" : "TL"}</td>
-  <td>${NumberWithCommas(liraPrice2)} ${norm2 ? "₺" : "TL"}</td>
+  <th scope="row"><strong>₺</strong></th>
+  <td>${NumberWithCommas(liraPrice1)} ${timeSlot1 > 3 ? "₺" : "TL"}</td>
+  <td>${NumberWithCommas(liraPrice2)} ${timeSlot2 > 3 ? "₺" : "TL"}</td>
   <td>${liraDifText}%</td>  
   `;
 
   dollarColumn.innerHTML = `
   <tr id="dollarColumn">
-  <th scope="row">Dolar</th>
-  <td>${NumberWithCommas(usdAmount1)} $<br /><strong>$</strong>➡${usdPrice1} ${
+  <th scope="row">💵</th>
+  <td>${NumberWithCommas(usdAmount1)} $<br />${usdPrice1} ${
     timeSlot1 > 3 ? "₺" : "TL"
   }</td>
-  <td>${NumberWithCommas(usdAmount2)} $<br /><strong>$</strong>➡${usdPrice2} ${
+  <td>${NumberWithCommas(usdAmount2)} $<br />${usdPrice2} ${
     timeSlot2 > 3 ? "₺" : "TL"
   }</td>
   <td>${usdDifText}%</td>
@@ -196,34 +207,34 @@ compareDates.addEventListener("click", async function (e) {
 
   euroColumn.innerHTML = `
   <tr id="euroColumn">
-  <th>Euro</th>
-  <td>${NumberWithCommas(eurAmount1)} €<br /><strong>€</strong>➡${eurPrice1} ${
+  <th>💶</th>
+  <td>${NumberWithCommas(eurAmount1)} €<br />${eurPrice1} ${
     timeSlot2 > 3 ? "₺" : "TL"
   }</td>
-  <td>${NumberWithCommas(eurAmount2)} €<br /><strong>€</strong>➡${eurPrice2} ${
+  <td>${NumberWithCommas(eurAmount2)} €<br />${eurPrice2} ${
     timeSlot2 > 3 ? "₺" : "TL"
   }</td>
   <td>${eurDifText} %</td>
   `;
 
   goldColumn.innerHTML = `
-  <th>Altın</th>
-  <td>${NumberWithCommas(goldAmount1)}gr <br />🪙➡${goldPrice1} ${
-    norm1 ? "₺" : "TL"
+  <th>🪙</th>
+  <td>${NumberWithCommas(goldAmount1)}gr <br />${goldPrice1} ${
+    timeSlot1 > 3 ? "₺" : "TL"
   }</td>
-  <td>${NumberWithCommas(goldAmount2)}gr <br />🪙➡${goldPrice2} ${
-    norm2 ? "₺" : "TL"
+  <td>${NumberWithCommas(goldAmount2)}gr <br />${goldPrice2} ${
+    timeSlot2 > 3 ? "₺" : "TL"
   }</td>
   <td>${goldDifText} %</td>
   `;
 
   wageColumn.innerHTML = `
-  <th>Asg. Ücret</th>
-  <td>${NumberWithCommas(minWageAmount1)}× <br />👷🏻➡${minWagePrice1} ${
-    norm1 ? "₺" : "TL"
+  <th>👷🏻</th>
+  <td>${NumberWithCommas(minWageAmount1)}× <br />${minWagePrice1} ${
+    timeSlot1 > 3 ? "₺" : "TL"
   }</td>
-  <td>${NumberWithCommas(minWageAmount2)}× <br />👷🏻➡${minWagePrice2} ${
-    norm2 ? "₺" : "TL"
+  <td>${NumberWithCommas(minWageAmount2)}× <br />${minWagePrice2} ${
+    timeSlot2 > 3 ? "₺" : "TL"
   }</td>
   <td>${minWageDifText} %</td>
   `;
@@ -247,7 +258,7 @@ TimeDifference = async function (date1, date2) {
     dif2 = Math.floor(dif / 29);
     return dif2.toString() + " ay";
   } else if (dif > 0) return "1 ay";
-  else return "-";
+  else return "&nbsp;&nbsp;&nbsp;-";
 };
 
 LiraDifference = async function (date1, date2) {
