@@ -2,6 +2,8 @@ compareDates = document.getElementById("compareDates");
 timeColumn = document.getElementById("timeColumn");
 liraColumn = document.getElementById("liraColumn");
 dollarColumn = document.getElementById("dollarColumn");
+goldColumn = document.getElementById("goldColumn");
+euroColumn = document.getElementById("euroColumn");
 wageColumn = document.getElementById("wageColumn");
 firstYear = document.getElementById("firstYear");
 secondYear = document.getElementById("secondYear");
@@ -44,6 +46,22 @@ compareDates.addEventListener("click", async function (e) {
 
   const usdDif = parseFloat(
     (await DollarDifference(checkTurningPoint, date1, date2)) - 100
+  ).toFixed(2);
+
+  const eurPrice1 = NumberWithCommas(
+    parseFloat(await CalculateEuro(date1)).toFixed(2)
+  );
+  const eurPrice2 = NumberWithCommas(
+    parseFloat(await CalculateEuro(date2)).toFixed(2)
+  );
+
+  const eurAmount1 = parseFloat(await ConvertEuro(liraPrice, date1)).toFixed(1);
+  const eurAmount2 = parseFloat(await ConvertEuro(liraPrice2, date2)).toFixed(
+    1
+  );
+
+  const eurAmountChange = parseFloat(
+    ((eurAmount1 - eurAmount2) / eurAmount1) * 100
   ).toFixed(2);
 
   const goldAmount1 = parseFloat(await ConvertGold(liraPrice, date1)).toFixed(
@@ -96,7 +114,7 @@ compareDates.addEventListener("click", async function (e) {
   ).toFixed(1);
 
   timeColumn.innerHTML = `
-  <th scope="row">⌚</th>
+  <th scope="row">Zaman dilimi</th>
   <td>${date1}</td>
   <td>${date2}</td>
   <td>${timeDif}</td>
@@ -104,31 +122,47 @@ compareDates.addEventListener("click", async function (e) {
 
   liraColumn.innerHTML = `
 
-  <th scope="row">&nbsp;₺</th>
+  <th scope="row">Lira</th>
   <td>${NumberWithCommas(liraPrice)} ₺</td>
   <td>${NumberWithCommas(liraPrice2)} ₺</td>
   <td>${liraAmountChange} %</td>  
   `;
 
   dollarColumn.innerHTML = `
-  <th scope="row">&nbsp;$</th>
-  <td>${NumberWithCommas(usdAmount1)} $<br />$: ${usdPrice1}</td>
-  <td>${NumberWithCommas(usdAmount2)} $<br />$: ${usdPrice2}</td>
+  <tr id="dollarColumn">
+  <th scope="row">Dolar</th>
+  <td>${NumberWithCommas(
+    usdAmount1
+  )} $<br /><strong>$</strong>➡${usdPrice1}</td>
+  <td>${NumberWithCommas(
+    usdAmount2
+  )} $<br /><strong>$</strong>➡${usdPrice2}</td>
   <td>${usdAmountChange} %</td>
   `;
 
-  goldColumn.innerHTML = `
-  <th scope="row">🥇</th>
-  <td>${NumberWithCommas(goldAmount1)} gr<br />🥇: ${goldPrice1}</td>
-  <td>${NumberWithCommas(goldAmount2)} gr<br />🥇: ${goldPrice2}</td>
+  euroColumn.innerHTML = `
+  <tr id="euroColumn">
+  <th scope="row">Euro</th>
+  <td>${NumberWithCommas(
+    eurAmount1
+  )} $<br /><strong>€</strong>➡${eurPrice1}</td>
+  <td>${NumberWithCommas(
+    eurAmount2
+  )} $<br /><strong>€</strong>➡${eurPrice2}</td>
+  <td>${eurAmountChange} %</td>
+  `;
 
+  goldColumn.innerHTML = `
+  <th scope="row">Altın</th>
+  <td>${NumberWithCommas(goldAmount1)}gr <br />🪙➡${goldPrice1}</td>
+  <td>${NumberWithCommas(goldAmount2)}gr <br />🪙➡${goldAmount2}</td>
   <td>${goldAmountChange} %</td>
   `;
 
   wageColumn.innerHTML = `
-  <th scope="row">👷🏻</th>
-  <td>${NumberWithCommas(minWageAmount1)} x<br />👷🏻: ${minWagePrice1}</td>
-  <td>${NumberWithCommas(minWageAmount2)} x<br />👷🏻: ${minWagePrice2}</td>
+  <th scope="row">Asgari Ücret</th>
+  <td>${NumberWithCommas(minWageAmount1)}× <br />👷🏻➡${minWagePrice1}</td>
+  <td>${NumberWithCommas(minWageAmount2)}× <br />👷🏻➡${minWagePrice2}</td>
   <td>${minWageAmountChange} %</td>
   `;
 });
@@ -136,23 +170,20 @@ compareDates.addEventListener("click", async function (e) {
 TimeDifference = async function (date1, date2) {
   const date01 = await FetchDataByDate(date1);
   const date02 = await FetchDataByDate(date2);
-  const dif = date01.FullDate - date02.FullDate;
+  const dif = Math.abs(date01.FullDate - date02.FullDate);
   let dif2;
-  let txt;
+
   if (dif > 730) {
     dif2 = Math.floor(dif / 365);
-    txt = dif2.toString() + " yıl";
+    return dif2.toString() + " yıl";
   } else if (dif >= 365) {
     dif2 = Math.floor(dif / 365);
-    txt = "1 yıl";
-  } else if (dif > 60) {
-    dif2 = Math.floor(dif / 30);
-    txt = dif2.toString() + " ay";
-  } else {
-    dif2 = dif / 30;
-    txt = Math.floor(dif2).toString() + " ay";
-  }
-  return txt;
+    return "1 yıl";
+  } else if (dif > 58) {
+    dif2 = Math.floor(dif / 28);
+    return dif2.toString() + " ay";
+  } else if (dif > 0) return "1 ay";
+  else return "-";
 };
 
 LiraDifference = async function (date1, date2) {
@@ -199,7 +230,25 @@ DollarDifference = async function (check, date1, date2) {
 
 ConvertDollar = async function (money, date) {
   const date01 = await FetchDataByDate(date);
-  const price = money / date01.USDTRY;
+  const price = money / date01.EURTRY;
+  return price;
+};
+
+CalculateEuro = async function (date1) {
+  const date01 = await FetchDataByDate(date1);
+  return date01.EURTRY;
+};
+
+EuroDifference = async function (check, date1, date2) {
+  const date01 = await FetchDataByDate(date1);
+  const date02 = await FetchDataByDate(date2);
+  const dif = 100 * (date01.EURTRY / date02.EURTRY);
+  return dif * check;
+};
+
+ConvertEuro = async function (money, date) {
+  const date01 = await FetchDataByDate(date);
+  const price = money / date01.EURTRY;
   return price;
 };
 
