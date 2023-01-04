@@ -1,4 +1,5 @@
 compareDates = document.getElementById("compareDates");
+resetValues = document.getElementById("resetValues");
 timeColumn = document.getElementById("timeColumn");
 liraColumn = document.getElementById("liraColumn");
 dollarColumn = document.getElementById("dollarColumn");
@@ -8,7 +9,7 @@ wageColumn = document.getElementById("wageColumn");
 firstYear = document.getElementById("firstYear");
 secondYear = document.getElementById("secondYear");
 amount1 = document.getElementById("amount1");
-amount2 = document.getElementById("amount1");
+amount2 = document.getElementById("amount2");
 
 liraPrice1 = document.getElementById("amount1").value;
 liraPrice2 = document.getElementById("amount2").value;
@@ -24,6 +25,14 @@ TimeDetection = (date) => {
   else if (date <= "2023-01") return 4;
   else return 5;
 };
+
+resetValues.addEventListener("click", (e) => {
+  e.preventDefault();
+  document.getElementById("amount1").value = 1000;
+  document.getElementById("firstYear").value = "2021-12";
+  document.getElementById("secondYear").value = "2023-01";
+  CompareFunction(1000, true);
+});
 
 document.getElementById("amount1").addEventListener("change", async (e) => {
   e.preventDefault();
