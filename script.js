@@ -22,9 +22,17 @@ compareDates.addEventListener("click", async function (e) {
 
   const liraPrice2 = parseFloat(await ConvertLira(date1, date2)).toFixed(1);
 
-  const liraAmountChange = parseFloat(
-    ((liraPrice2 - liraPrice) / liraPrice) * 100
-  ).toFixed(2);
+  const normalLira = liraPrice2 / checkTurningPoint;
+  console.log(normalLira);
+  const liraAmountChange =
+    checkTurningPoint > 1
+      ? parseFloat(((normalLira - liraPrice) / liraPrice) * 100).toFixed(4)
+      : parseFloat(
+          (1 / checkTurningPoint) *
+            (((liraPrice2 - liraPrice) / liraPrice) * 100)
+        ).toFixed(2);
+
+  //euro calculate problem 2000
 
   const usdPrice1 = NumberWithCommas(
     parseFloat(await CalculateDollar(date1)).toFixed(2)
@@ -42,10 +50,6 @@ compareDates.addEventListener("click", async function (e) {
 
   const usdAmountChange = parseFloat(
     ((usdAmount1 - usdAmount2) / usdAmount1) * 100
-  ).toFixed(2);
-
-  const usdDif = parseFloat(
-    (await DollarDifference(checkTurningPoint, date1, date2)) - 100
   ).toFixed(2);
 
   const eurPrice1 = NumberWithCommas(
@@ -124,45 +128,53 @@ compareDates.addEventListener("click", async function (e) {
 
   <th scope="row">Lira</th>
   <td>${NumberWithCommas(liraPrice)} ₺</td>
-  <td>${NumberWithCommas(liraPrice2)} ₺</td>
+  <td>${NumberWithCommas(liraPrice2)} ${checkTurningPoint > 1 ? "TL" : "₺"}</td>
   <td>${liraAmountChange} %</td>  
   `;
 
   dollarColumn.innerHTML = `
   <tr id="dollarColumn">
   <th scope="row">Dolar</th>
-  <td>${NumberWithCommas(
-    usdAmount1
-  )} $<br /><strong>$</strong>➡${usdPrice1}</td>
-  <td>${NumberWithCommas(
-    usdAmount2
-  )} $<br /><strong>$</strong>➡${usdPrice2}</td>
+  <td>${NumberWithCommas(usdAmount1)} $<br /><strong>$</strong>➡${usdPrice1} ${
+    checkTurningPoint > 1 ? "TL" : "₺"
+  }</td>
+  <td>${NumberWithCommas(usdAmount2)} $<br /><strong>$</strong>➡${usdPrice2} ${
+    checkTurningPoint > 1 ? "TL" : "₺"
+  }</td>
   <td>${usdAmountChange} %</td>
   `;
 
   euroColumn.innerHTML = `
   <tr id="euroColumn">
   <th scope="row">Euro</th>
-  <td>${NumberWithCommas(
-    eurAmount1
-  )} $<br /><strong>€</strong>➡${eurPrice1}</td>
-  <td>${NumberWithCommas(
-    eurAmount2
-  )} $<br /><strong>€</strong>➡${eurPrice2}</td>
+  <td>${NumberWithCommas(eurAmount1)} €<br /><strong>€</strong>➡${eurPrice1} ${
+    checkTurningPoint > 1 ? "TL" : "₺"
+  }</td>
+  <td>${NumberWithCommas(eurAmount2)} €<br /><strong>€</strong>➡${eurPrice2} ${
+    checkTurningPoint > 1 ? "TL" : "₺"
+  }</td>
   <td>${eurAmountChange} %</td>
   `;
 
   goldColumn.innerHTML = `
   <th scope="row">Altın</th>
-  <td>${NumberWithCommas(goldAmount1)}gr <br />🪙➡${goldPrice1}</td>
-  <td>${NumberWithCommas(goldAmount2)}gr <br />🪙➡${goldAmount2}</td>
+  <td>${NumberWithCommas(goldAmount1)}gr <br />🪙➡${goldPrice1} ${
+    checkTurningPoint > 1 ? "TL" : "₺"
+  }</td>
+  <td>${NumberWithCommas(goldAmount2)}gr <br />🪙➡${goldPrice2} ${
+    checkTurningPoint > 1 ? "TL" : "₺"
+  }</td>
   <td>${goldAmountChange} %</td>
   `;
 
   wageColumn.innerHTML = `
   <th scope="row">Asgari Ücret</th>
-  <td>${NumberWithCommas(minWageAmount1)}× <br />👷🏻➡${minWagePrice1}</td>
-  <td>${NumberWithCommas(minWageAmount2)}× <br />👷🏻➡${minWagePrice2}</td>
+  <td>${NumberWithCommas(minWageAmount1)}× <br />👷🏻➡${minWagePrice1} ${
+    checkTurningPoint > 1 ? "TL" : "₺"
+  }</td>
+  <td>${NumberWithCommas(minWageAmount2)}× <br />👷🏻➡${minWagePrice2} ${
+    checkTurningPoint > 1 ? "TL" : "₺"
+  }</td>
   <td>${minWageAmountChange} %</td>
   `;
 });
@@ -210,9 +222,14 @@ ConvertLira = async function (date1, date2) {
 TurningPointCheck = async function (date1, date2) {
   const date01 = await FetchDataByDate(date1);
   const date02 = await FetchDataByDate(date2);
-  if (date01.FullDate > 38322 && date02.FullDate <= 38322) {
-    return 1000000;
+  try {
+    if (date01.FullDate > 38322 && date02.FullDate <= 38322) {
+      return 1000000;
+    }
+  } catch (error) {
+    console.log(error);
   }
+
   return 1;
 };
 
@@ -221,35 +238,26 @@ CalculateDollar = async function (date1) {
   return date01.USDTRY;
 };
 
-DollarDifference = async function (check, date1, date2) {
-  const date01 = await FetchDataByDate(date1);
-  const date02 = await FetchDataByDate(date2);
-  const dif = 100 * (date01.USDTRY / date02.USDTRY);
-  return dif * check;
-};
-
 ConvertDollar = async function (money, date) {
   const date01 = await FetchDataByDate(date);
-  const price = money / date01.EURTRY;
+  const price = money / date01.USDTRY;
   return price;
 };
 
 CalculateEuro = async function (date1) {
   const date01 = await FetchDataByDate(date1);
+  if (date01.FullDate < 36161) {
+    return 0;
+  }
   return date01.EURTRY;
-};
-
-EuroDifference = async function (check, date1, date2) {
-  const date01 = await FetchDataByDate(date1);
-  const date02 = await FetchDataByDate(date2);
-  const dif = 100 * (date01.EURTRY / date02.EURTRY);
-  return dif * check;
 };
 
 ConvertEuro = async function (money, date) {
   const date01 = await FetchDataByDate(date);
-  const price = money / date01.EURTRY;
-  return price;
+  if (date01.FullDate < 36161) {
+    return 0;
+  }
+  return money / date01.EURTRY;
 };
 
 ConvertMinWage = async function (money, date) {
