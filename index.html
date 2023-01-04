@@ -23,7 +23,7 @@
                 placeholder="İlk Yıl"
                 aria-label="First Year"
                 name="firstYear"
-                value="2023-01"
+                value="2021-12"
                 min="1980-01"
                 max="2023-01"
                 id="firstYear"
@@ -34,7 +34,7 @@
                 placeholder="İkinci Yıl"
                 aria-label="Second Year"
                 name="secondYear"
-                value="2017-01"
+                value="2023-01"
                 min="1980-01"
                 max="2023-01"
                 id="secondYear"
@@ -45,17 +45,38 @@
               <input
                 class="form-control"
                 type="number"
-                id="amount"
-                name="amount"
+                id="amount1"
+                name="amount1"
                 value="1000"
                 placeholder="Miktar"
               />
               <span class="input-group-text">₺</span>
+              <input
+              class="form-control"
+              type="number"
+              id="amount2"
+              name="amount2"
+              value="1642.7"
+              placeholder="Miktar"
+            />
             </div>
-            <div class="row px-2">
-              <button class="btn btn-primary" id="compareDates">
-                Karşılaştır
-              </button>
+            <div class=" row px-3">
+              <div class="col col-md-6 px-3">
+                <div class="row">
+                  <button class="btn btn-primary btn-block" id="compareDates1">
+                    ⇖ Karşılaştır ⇖
+                  </button>
+                </div>
+              </div>
+              <div class="col col-md-6">
+                <div class="row">
+                  <button class="btn btn-primary btn-block" id="compareDates2">
+                    ⇗ Karşılaştır ⇗
+                  </button>
+                </div>
+              </div>
+             
+    
             </div>
           </form>
 
@@ -71,8 +92,8 @@
             <tbody>
               <tr id="timeColumn">
                 <th>⌚</th>
+                <td>2021-12</td>
                 <td>2023-01</td>
-                <td>2017-01</td>
                 <td>
                   📅 <br /><strong><i class="text-primary">
                   6 yıl
