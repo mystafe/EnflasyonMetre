@@ -72,16 +72,24 @@ document.getElementById("reverseButtonDate").addEventListener("click", (e) => {
 CompareFunction = async function (lira, isFirst) {
   timeSlot1 = TimeDetection(firstYear.value);
   timeSlot2 = TimeDetection(secondYear.value);
+  let moneyValid1 = timeSlot1 > 1 && timeSlot1 < 5;
+  let moneyValid2 = timeSlot2 > 1 && timeSlot2 < 5;
+  let euroValid1 = timeSlot1 > 2 && timeSlot1 < 5;
+  let euroValid2 = timeSlot2 > 2 && timeSlot2 < 5;
+
+  let usdPrice1, usdAmount1, usdPrice2, usdAmount2, eurPrice1;
+  let eurAmount1, eurPrice2, usdAmountChange, eurAmountChange, goldPrice1;
+  let goldAmount1, goldPrice2, goldAmount2, goldAmountChange, minWagePrice1;
+  let minWageAmount1, minWagePrice2, minWageAmount2, minWageAmountChange;
 
   let time1, time2;
-  if (timeSlot1 > 1 && timeSlot1 < 5) {
+
+  if (moneyValid1) {
     date1 = firstYear.value;
-    timeCheck1 = true;
     time1 = await FetchDataByDate(date1);
   }
-  if (timeSlot2 > 1 && timeSlot2 < 5) {
+  if (moneyValid2) {
     date2 = secondYear.value;
-    timeCheck2 = true;
     time2 = await FetchDataByDate(date2);
   }
 
@@ -93,50 +101,43 @@ CompareFunction = async function (lira, isFirst) {
     liraPrice1 = parseFloat(await ConvertLira(lira, time2, time1)).toFixed(1);
   }
 
-  if (timeCheck1 && timeCheck2) {
+  //lira
+  let timeDifText = "";
+  let liraDifText = "";
+  let minWageDifText = "";
+  let goldDifText = "";
+  let eurDifText = "";
+  let usdDifText = "";
+
+  if (moneyValid1 && moneyValid2) {
     timeDif = await TimeDifference(date1, date2);
+    const normalLira1 = timeSlot1 > 3 ? 1 * liraPrice1 : liraPrice1 / 1000000;
+    const normalLira2 = timeSlot2 > 3 ? 1 * liraPrice2 : liraPrice2 / 1000000;
+    const liraDif = normalLira2 - normalLira1;
+
+    let liraAmountChange;
+    if (timeSlot1 > 3 && timeSlot2 > 3) {
+      liraAmountChange = parseFloat((liraDif / normalLira1) * 100).toFixed(1);
+    } else if (timeSlot1 < 4 && timeSlot2 < 4) {
+      liraAmountChange = parseFloat((liraDif / normalLira1) * 100).toFixed(2);
+    } else
+      liraAmountChange = parseFloat((liraDif / normalLira1) * 100).toFixed(4);
+
+    timeDifText = `&nbsp;📅<br/><strong><i class="text-primary">${timeDif}</i></strong>`;
+
+    const positiveLiraCheck = normalLira1 > normalLira2;
+
+    if (positiveLiraCheck) {
+      liraDifText = `&nbsp;📈<br/><strong><i class="text-success">%${Math.abs(
+        liraAmountChange
+      )}</i></strong>`;
+    } else
+      liraDifText = `&nbsp;📉<br/><strong><i class="text-danger">%${Math.abs(
+        liraAmountChange
+      )}</i></strong>`;
   }
 
-  const normalLira1 = timeSlot1 > 3 ? 1 * liraPrice1 : liraPrice1 / 1000000;
-  const normalLira2 = timeSlot2 > 3 ? 1 * liraPrice2 : liraPrice2 / 1000000;
-
-  const liraDif = normalLira2 - normalLira1;
-
-  let liraAmountChange;
-  if (timeSlot1 > 3 && timeSlot2 > 3) {
-    liraAmountChange = parseFloat((liraDif / normalLira1) * 100).toFixed(1);
-  } else if (timeSlot1 < 4 && timeSlot2 < 4) {
-    liraAmountChange = parseFloat((liraDif / normalLira1) * 100).toFixed(2);
-  } else
-    liraAmountChange = parseFloat((liraDif / normalLira1) * 100).toFixed(4);
-
-  const timeDifText = `&nbsp;📅<br/><strong><i class="text-primary">${await TimeDifference(
-    date1,
-    date2
-  )}</i></strong>`;
-
-  const positiveLiraCheck = normalLira1 > normalLira2;
-  let liraDifText;
-  if (positiveLiraCheck) {
-    liraDifText = `&nbsp;📈<br/><strong><i class="text-success">%${Math.abs(
-      liraAmountChange
-    )}</i></strong>`;
-  } else
-    liraDifText = `&nbsp;📉<br/><strong><i class="text-danger">%${Math.abs(
-      liraAmountChange
-    )}</i></strong>`;
-
-  //euro calculate problem 2000
-
-  let usdPrice1, usdAmount1, usdPrice2, usdAmount2, eurPrice1, eurAmount1;
-  let eurPrice2 = 0;
-  let usdAmountChange, eurAmountChange, goldPrice1, goldAmount1;
-  let goldPrice2 = 0;
-  let goldAmount2, goldAmountChange, minWagePrice1, minWageAmount1;
-  let minWagePrice2 = 0;
-  let minWageAmount2, minWageAmountChange;
-
-  if (timeSlot1 > 1 && timeSlot1 < 5) {
+  if (moneyValid1) {
     usdPrice1 = NumberWithCommas(parseFloat(time1.USDTRY).toFixed(2));
     usdAmount1 = parseFloat(liraPrice1 / time1.USDTRY).toFixed(1);
     goldPrice1 = NumberWithCommas(parseFloat(time1.GoldPerGramTRY).toFixed(2));
@@ -145,8 +146,13 @@ CompareFunction = async function (lira, isFirst) {
       parseFloat(time1.minWageNetTRY).toFixed(2)
     );
     minWageAmount1 = parseFloat(liraPrice1 / time1.minWageNetTRY).toFixed(2);
+  } else if (!moneyValid1) {
+    liraPrice1 = usdPrice1 = eurPrice1 = goldPrice1 = minWagePrice1 = "0";
+    date1 = "2021-12";
+    console.log("money1 zero" + liraPrice1, usdPrice1, minWagePrice1);
   }
-  if (timeSlot2 > 1 && timeSlot2 < 5) {
+
+  if (moneyValid2) {
     usdPrice2 = NumberWithCommas(parseFloat(time2.USDTRY).toFixed(2));
     usdAmount2 = parseFloat(liraPrice2 / time2.USDTRY).toFixed(1);
     goldPrice2 = NumberWithCommas(parseFloat(time2.GoldPerGramTRY).toFixed(2));
@@ -155,176 +161,162 @@ CompareFunction = async function (lira, isFirst) {
       parseFloat(time2.minWageNetTRY).toFixed(2)
     );
     minWageAmount2 = parseFloat(liraPrice2 / time2.minWageNetTRY).toFixed(2);
-  }
-  if (timeSlot1 > 1 && timeSlot1 < 5 && timeSlot2 > 1 && timeSlot2 < 5) {
-    const usdCheck = isNaN(
-      parseFloat(((usdAmount1 - usdAmount2) / usdAmount1) * 100).toFixed(2)
-    )
-      ? 0
-      : parseFloat(((usdAmount1 - usdAmount2) / usdAmount1) * 100).toFixed(2);
-    usdAmountChange = usdCheck;
-
-    const goldCheck = isNaN(
-      parseFloat(((goldAmount1 - goldAmount2) / goldAmount1) * 100).toFixed(2)
-    )
-      ? 0
-      : parseFloat(((goldAmount1 - goldAmount2) / goldAmount1) * 100).toFixed(
-          2
-        );
-    goldAmountChange = goldCheck;
-
-    const minWageCheck = isNaN(
-      parseFloat(
-        ((minWageAmount1 - minWageAmount2) / minWageAmount1) * 100
-      ).toFixed(2)
-    )
-      ? 0
-      : parseFloat(
-          ((minWageAmount1 - minWageAmount2) / minWageAmount1) * 100
-        ).toFixed(2);
-    minWageAmountChange = minWageCheck;
-  }
-  const positiveUsdCheck = usdAmount2 > usdAmount1;
-  let usdDifText;
-  if (positiveUsdCheck) {
-    usdDifText = `&nbsp;📈<br/><strong><i class="text-success">%${Math.abs(
-      usdAmountChange
-    )}</i></strong>`;
-  } else
-    usdDifText = `&nbsp;📉<br/><strong><i class="text-danger">%${Math.abs(
-      usdAmountChange
-    )}</i></strong>`;
-
-  if (timeSlot1 > 2 && timeSlot1 < 5) {
-    eurPrice1 = NumberWithCommas(parseFloat(time1.EURTRY).toFixed(2));
-    eurAmount1 = parseFloat(liraPrice1 / time1.EURTRY).toFixed(1);
-  }
-  if (timeSlot2 > 2 && timeSlot2 < 5) {
-    eurPrice2 = NumberWithCommas(parseFloat(time2.EURTRY).toFixed(2));
-    eurAmount2 = parseFloat(liraPrice2 / time2.EURTRY).toFixed(1);
-  }
-  if (timeSlot1 > 2 && timeSlot1 < 5 && timeSlot2 > 2 && timeSlot2 < 5) {
-    const eurCheck = isNaN(
-      parseFloat(((eurAmount1 - eurAmount2) / eurAmount1) * 100).toFixed(2)
-    )
-      ? 0
-      : parseFloat(((eurAmount1 - eurAmount2) / eurAmount1) * 100).toFixed(2);
-    eurAmountChange = eurCheck;
+  } else if (!moneyValid2) {
+    liraPrice2 = usdPrice2 = eurPrice2 = goldPrice2 = minWagePrice2 = 0;
+    date2 = "2023-01";
   }
 
-  const positiveEurCheck = eurPrice2 > eurPrice1;
-  let eurDifText;
-  if (positiveEurCheck) {
-    eurDifText = `&nbsp;📈<br/><strong><i class="text-success">%${Math.abs(
-      eurAmountChange
-    )}</i></strong>`;
-  } else
-    eurDifText = `&nbsp;📉<br/><strong><i class="text-danger">%${Math.abs(
-      eurAmountChange
-    )}</i></strong>`;
+  if (moneyValid1 && moneyValid2) {
+    usdAmountChange = parseFloat(
+      ((usdAmount1 - usdAmount2) / usdAmount1) * 100
+    ).toFixed(2);
 
-  const positiveGolddCheck = goldAmount2 > goldAmount1;
-  let goldDifText;
-  if (positiveGolddCheck) {
-    goldDifText = `&nbsp;📈<br/><strong><i class="text-success">%${Math.abs(
-      goldAmountChange
-    )}</i></strong>`;
-  } else
-    goldDifText = `&nbsp;📉<br/><strong><i class="text-danger">%${Math.abs(
-      goldAmountChange
-    )}</i></strong>`;
+    goldAmountChange = parseFloat(
+      ((goldAmount1 - goldAmount1) / goldAmount1) * 100
+    ).toFixed(2);
 
-  const positiveMinWageCheck = minWageAmount2 > minWageAmount1;
-  let minWageDifText;
-  if (positiveMinWageCheck) {
-    minWageDifText = `&nbsp;📉<br/><strong><i class="text-danger">%${Math.abs(
-      minWageAmountChange
-    )}</i></strong>`;
-  } else
-    minWageDifText = `&nbsp;📈<br/><strong><i class="text-success">%${Math.abs(
-      minWageAmountChange
-    )}</i></strong>`;
+    minWageAmountChange = parseFloat(
+      ((minWageAmount1 - minWageAmount2) / minWageAmount1) * 100
+    ).toFixed(2);
 
-  document.getElementById("amount1").value = parseFloat(liraPrice1).toFixed();
-  document.getElementById("amount2").value = parseFloat(liraPrice2).toFixed();
+    const positiveUsdCheck = usdAmount2 > usdAmount1;
 
-  timeColumn.innerHTML = `
-  <th scope="row">⌚</th>
-  <td>${date1}</td>
-  <td>${date2}</td>
-  <td>${timeDifText}</td>
-  `;
+    if (positiveUsdCheck && moneyValid1 && moneyValid2) {
+      usdDifText = `&nbsp;📈<br/><strong><i class="text-success">%${Math.abs(
+        usdAmountChange
+      )}</i></strong>`;
+    } else if (!positiveUsdCheck && moneyValid1 && moneyValid2)
+      usdDifText = `&nbsp;📉<br/><strong><i class="text-danger">%${Math.abs(
+        usdAmountChange
+      )}</i></strong>`;
 
-  liraColumn.innerHTML = `
+    if (euroValid1) {
+      eurPrice1 = NumberWithCommas(parseFloat(time1.EURTRY).toFixed(2));
+      eurAmount1 = parseFloat(liraPrice1 / time1.EURTRY).toFixed(1);
+    }
+    if (euroValid2) {
+      eurPrice2 = NumberWithCommas(parseFloat(time2.EURTRY).toFixed(2));
+      eurAmount2 = parseFloat(liraPrice2 / time2.EURTRY).toFixed(1);
+    }
+    if (euroValid1 && euroValid2) {
+      eurAmountChange = parseFloat(
+        ((eurAmount1 - eurAmount2) / eurAmount1) * 100
+      ).toFixed(2);
 
-  <th scope="row"><strong>₺</strong></th>
-  <td>${NumberWithCommas(liraPrice1)} ${timeSlot1 > 3 ? "₺" : "TL"}</td>
-  <td>${NumberWithCommas(liraPrice2)} ${timeSlot2 > 3 ? "₺" : "TL"}</td>
-  <td>${liraDifText}</td>  
-  `;
+      const positiveEurCheck = eurPrice2 > eurPrice1;
 
-  dollarColumn.innerHTML = `
-  <tr id="dollarColumn">
-  <th scope="row">💵</th>
-  <td>${NumberWithCommas(
-    usdAmount1
-  )} $<br /><strong><i class="text-muted">${usdPrice1} ${
-    timeSlot1 > 3 ? "₺" : "TL"
-  }</i></strong></td>
+      if (positiveEurCheck && euroValid1 && euroValid2) {
+        eurDifText = `&nbsp;📈<br/><strong><i class="text-success">%${Math.abs(
+          eurAmountChange
+        )}</i></strong>`;
+      } else if (!positiveEurCheck && euroValid1 && euroValid2)
+        eurDifText = `&nbsp;📉<br/><strong><i class="text-danger">%${Math.abs(
+          eurAmountChange
+        )}</i></strong>`;
+    }
 
-  <td>${NumberWithCommas(
-    usdAmount2
-  )} $<br /><strong><i class="text-muted">${usdPrice2} ${
-    timeSlot2 > 3 ? "₺" : "TL"
-  }</i></strong></td>
-  <td>${usdDifText}</td>
-  `;
+    const positiveGolddCheck = goldAmount2 > goldAmount1;
+    if (positiveGolddCheck && moneyValid1 && moneyValid2) {
+      goldDifText = `&nbsp;📈<br/><strong><i class="text-success">%${Math.abs(
+        goldAmountChange
+      )}</i></strong>`;
+    } else if (!positiveGolddCheck && moneyValid1 && moneyValid2)
+      goldDifText = `&nbsp;📉<br/><strong><i class="text-danger">%${Math.abs(
+        goldAmountChange
+      )}</i></strong>`;
 
-  euroColumn.innerHTML = `
-  <tr id="euroColumn">
-  <th>💶</th>
-  <td>${NumberWithCommas(
-    eurAmount1
-  )} €<br /><strong><i class="text-muted">${eurPrice1} ${
-    timeSlot2 > 3 ? "₺" : "TL"
-  }</i></strong></td>
-  <td>${NumberWithCommas(
-    eurAmount2
-  )} €<br /><strong><i class="text-muted">${eurPrice2} ${
-    timeSlot2 > 3 ? "₺" : "TL"
-  }</i></strong></td>
-  <td>${eurDifText}</td>
-  `;
+    const positiveMinWageCheck = minWageAmount2 > minWageAmount1;
 
-  goldColumn.innerHTML = `
-  <th>🪙</th>
-  <td>${NumberWithCommas(
-    goldAmount1
-  )} gr <br /><strong><i class="text-muted">${goldPrice1} ${
-    timeSlot1 > 3 ? "₺" : "TL"
-  }</i></strong></td>
-  <td>${NumberWithCommas(
-    goldAmount2
-  )} gr <br /><strong><i class="text-muted">${goldPrice2} ${
-    timeSlot2 > 3 ? "₺" : "TL"
-  }</i></strong></td>
-  <td>${goldDifText}</td>
-  `;
+    if (positiveMinWageCheck && moneyValid1 && moneyValid2) {
+      minWageDifText = `&nbsp;📉<br/><strong><i class="text-danger">%${Math.abs(
+        minWageAmountChange
+      )}</i></strong>`;
+    } else if (!positiveMinWageCheck && moneyValid1 && moneyValid2)
+      minWageDifText = `&nbsp;📈<br/><strong><i class="text-success">%${Math.abs(
+        minWageAmountChange
+      )}</i></strong>`;
 
-  wageColumn.innerHTML = `
-  <th>👷🏻</th>
-  <td>${NumberWithCommas(
-    minWageAmount1
-  )}× <br /><strong><i class="text-muted">${minWagePrice1} ${
-    timeSlot1 > 3 ? "₺" : "TL"
-  }</i></strong></td>
-  <td>${NumberWithCommas(
-    minWageAmount2
-  )}× <br /><strong><i class="text-muted">${minWagePrice2} ${
-    timeSlot2 > 3 ? "₺" : "TL"
-  }</i></strong></td>
-  <td>${minWageDifText}</td>
-  `;
+    document.getElementById("amount1").value = parseFloat(liraPrice1).toFixed();
+    document.getElementById("amount2").value = parseFloat(liraPrice2).toFixed();
+
+    timeColumn.innerHTML = `
+    <th scope="row">⌚</th>
+    <td>${date1}</td>
+    <td>${date2}</td>
+    <td>${timeDifText}</td>
+    `;
+
+    liraColumn.innerHTML = `
+  
+    <th scope="row"><strong>₺</strong></th>
+    <td>${NumberWithCommas(liraPrice1)} ${timeSlot1 > 3 ? "₺" : "TL"}</td>
+    <td>${NumberWithCommas(liraPrice2)} ${timeSlot2 > 3 ? "₺" : "TL"}</td>
+    <td>${liraDifText}</td>  
+    `;
+
+    dollarColumn.innerHTML = `
+    <tr id="dollarColumn">
+    <th scope="row">💵</th>
+    <td>${NumberWithCommas(
+      usdAmount1
+    )} $<br /><strong><i class="text-muted">${usdPrice1} ${
+      timeSlot1 > 3 ? "₺" : "TL"
+    }</i></strong></td>
+  
+    <td>${NumberWithCommas(
+      usdAmount2
+    )} $<br /><strong><i class="text-muted">${usdPrice2} ${
+      timeSlot2 > 3 ? "₺" : "TL"
+    }</i></strong></td>
+    <td>${usdDifText}</td>
+    `;
+
+    euroColumn.innerHTML = `
+    <tr id="euroColumn">
+    <th>💶</th>
+    <td>${NumberWithCommas(
+      eurAmount1
+    )} €<br /><strong><i class="text-muted">${eurPrice1} ${
+      timeSlot2 > 3 ? "₺" : "TL"
+    }</i></strong></td>
+    <td>${NumberWithCommas(
+      eurAmount2
+    )} €<br /><strong><i class="text-muted">${eurPrice2} ${
+      timeSlot2 > 3 ? "₺" : "TL"
+    }</i></strong></td>
+    <td>${eurDifText}</td>
+    `;
+
+    goldColumn.innerHTML = `
+    <th>🪙</th>
+    <td>${NumberWithCommas(
+      goldAmount1
+    )} gr <br /><strong><i class="text-muted">${goldPrice1} ${
+      timeSlot1 > 3 ? "₺" : "TL"
+    }</i></strong></td>
+    <td>${NumberWithCommas(
+      goldAmount2
+    )} gr <br /><strong><i class="text-muted">${goldPrice2} ${
+      timeSlot2 > 3 ? "₺" : "TL"
+    }</i></strong></td>
+    <td>${goldDifText}</td>
+    `;
+
+    wageColumn.innerHTML = `
+    <th>👷🏻</th>
+    <td>${NumberWithCommas(
+      minWageAmount1
+    )}× <br /><strong><i class="text-muted">${minWagePrice1} ${
+      timeSlot1 > 3 ? "₺" : "TL"
+    }</i></strong></td>
+    <td>${NumberWithCommas(
+      minWageAmount2
+    )}× <br /><strong><i class="text-muted">${minWagePrice2} ${
+      timeSlot2 > 3 ? "₺" : "TL"
+    }</i></strong></td>
+    <td>${minWageDifText}</td>
+    `;
+  }
 };
 
 compareDates.addEventListener("click", async function (e) {
@@ -333,24 +325,30 @@ compareDates.addEventListener("click", async function (e) {
 });
 
 TimeDifference = async function (date1, date2) {
-  const date01 = await FetchDataByDate(date1);
-  const date02 = await FetchDataByDate(date2);
+  let date01, date02;
+  try {
+    date01 = await FetchDataByDate(date1);
+    date02 = await FetchDataByDate(date2);
 
-  let dif = Math.abs(date01.FullDate - date02.FullDate);
+    let dif = Math.abs(date01.FullDate - date02.FullDate);
 
-  let dif2;
+    let dif2;
 
-  if (dif > 730) {
-    dif2 = Math.floor(dif / 365);
-    return dif2.toString() + " yıl";
-  } else if (dif >= 365) {
-    dif2 = Math.floor(dif / 365);
-    return "1 yıl";
-  } else if (dif > 58) {
-    dif2 = Math.floor(dif / 29);
-    return dif2.toString() + " ay";
-  } else if (dif > 0) return "1 ay";
-  else return "&nbsp;&nbsp;&nbsp;-";
+    if (dif > 730) {
+      dif2 = Math.floor(dif / 365);
+      return dif2.toString() + " yıl";
+    } else if (dif >= 365) {
+      dif2 = Math.floor(dif / 365);
+      return "1 yıl";
+    } else if (dif > 58) {
+      dif2 = Math.floor(dif / 29);
+      return dif2.toString() + " ay";
+    } else if (dif > 0) return "1 ay";
+    else return "&nbsp;&nbsp;&nbsp;-";
+  } catch (error) {
+    console.log(error);
+  }
+  return "&nbsp;&nbsp;&nbsp;-";
 };
 
 LiraDifference = async function (date1, date2) {
@@ -363,10 +361,17 @@ LiraDifference = async function (date1, date2) {
 };
 //error handling
 ConvertLira = async function (lira, date1, date2) {
-  const price = (lira / date1.InflationIndex) * date2.InflationIndex;
-  if (timeSlot1 > 3 && timeSlot2 > 3) return price;
-  else if (timeSlot1 > 3) return price * 1000000;
-  else if (timeSlot2 > 3) return price / 1000000;
+  let price = "0";
+
+  try {
+    price = (lira / date1.InflationIndex) * date2.InflationIndex;
+    if (timeSlot1 > 3 && timeSlot2 > 3) return price;
+    else if (timeSlot1 > 3) return price * 1000000;
+    else if (timeSlot2 > 3) return price / 1000000;
+  } catch (error) {
+    console.warn(error);
+  }
+
   return price;
 };
 
@@ -452,7 +457,13 @@ FetchDataByDate = async function (date) {
 };
 
 function NumberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  let ret = x;
+  try {
+    ret = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  } catch (error) {
+    console.warn(error);
+  }
+  return ret;
 }
 
 //ilk ve 2. kolon değiştirilebilir..
