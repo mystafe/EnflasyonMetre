@@ -149,7 +149,6 @@ CompareFunction = async function (lira, isFirst) {
   } else if (!moneyValid1) {
     liraPrice1 = usdPrice1 = eurPrice1 = goldPrice1 = minWagePrice1 = "0";
     date1 = "2021-12";
-    console.log("money1 zero" + liraPrice1, usdPrice1, minWagePrice1);
   }
 
   if (moneyValid2) {
@@ -172,7 +171,7 @@ CompareFunction = async function (lira, isFirst) {
     ).toFixed(2);
 
     goldAmountChange = parseFloat(
-      ((goldAmount1 - goldAmount1) / goldAmount1) * 100
+      ((goldAmount1 - goldAmount2) / goldAmount1) * 100
     ).toFixed(2);
 
     minWageAmountChange = parseFloat(
@@ -198,6 +197,14 @@ CompareFunction = async function (lira, isFirst) {
       eurPrice2 = NumberWithCommas(parseFloat(time2.EURTRY).toFixed(2));
       eurAmount2 = parseFloat(liraPrice2 / time2.EURTRY).toFixed(1);
     }
+    if (!euroValid1) {
+      eurPrice1 = 0;
+      eurAmount1 = 0;
+    }
+    if (!euroValid2) {
+      eurPrice2 = 0;
+      eurAmount2 = 0;
+    }
     if (euroValid1 && euroValid2) {
       eurAmountChange = parseFloat(
         ((eurAmount1 - eurAmount2) / eurAmount1) * 100
@@ -213,6 +220,8 @@ CompareFunction = async function (lira, isFirst) {
         eurDifText = `&nbsp;📉<br/><strong><i class="text-danger">%${Math.abs(
           eurAmountChange
         )}</i></strong>`;
+    } else {
+      eurDifText = "";
     }
 
     const positiveGolddCheck = goldAmount2 > goldAmount1;
