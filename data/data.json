@@ -5953,7 +5953,7 @@
   {
     "Date": "2022-12",
     "FullDate": 44896,
-    "InflationIndex": 1128.42,
+    "InflationIndex": 1128.45,
     "MonthlyInflation": 0.0118,
     "minWageNetTRY": 5500.4,
     "minWageGrossTRY": 6476,
@@ -5965,8 +5965,8 @@
   {
     "Date": "2023-01",
     "FullDate": 44927,
-    "InflationIndex": 1128.42,
-    "MonthlyInflation": 0.0118,
+    "InflationIndex": 1135.95,
+    "MonthlyInflation": 0.0665,
     "minWageNetTRY": 8506.8,
     "minWageGrossTRY": 10750,
     "minWageNetUSD": 454,
