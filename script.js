@@ -29,8 +29,8 @@ TimeDetection = (date) => {
 resetValues.addEventListener("click", (e) => {
   e.preventDefault();
   document.getElementById("amount1").value = 1000;
-  document.getElementById("firstYear").value = "2022-01";
-  document.getElementById("secondYear").value = "2023-04";
+  document.getElementById("firstYear").value = "2023-05";
+  document.getElementById("secondYear").value = "2006-01";
   CompareFunction(1000, true);
 });
 
@@ -148,7 +148,7 @@ CompareFunction = async function (lira, isFirst) {
     minWageAmount1 = parseFloat(liraPrice1 / time1.minWageNetTRY).toFixed(2);
   } else if (!moneyValid1) {
     liraPrice1 = usdPrice1 = eurPrice1 = goldPrice1 = minWagePrice1 = "0";
-    date1 = "2021-12";
+    date1 = "2023-05";
   }
 
   if (moneyValid2) {
@@ -162,7 +162,7 @@ CompareFunction = async function (lira, isFirst) {
     minWageAmount2 = parseFloat(liraPrice2 / time2.minWageNetTRY).toFixed(2);
   } else if (!moneyValid2) {
     liraPrice2 = usdPrice2 = eurPrice2 = goldPrice2 = minWagePrice2 = 0;
-    date2 = "2023-01";
+    date2 = "2006-01";
   }
 
   if (moneyValid1 && moneyValid2) {
