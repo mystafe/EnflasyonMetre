@@ -5965,7 +5965,7 @@
   {
     "Date": "2023-01",
     "FullDate": 44927,
-    "InflationIndex": 1135.95,
+    "InflationIndex": 1203.48,
     "MonthlyInflation": 0.0665,
     "minWageNetTRY": 8506.8,
     "minWageGrossTRY": 10750,
@@ -5973,5 +5973,53 @@
     "GoldPerGramTRY": 1096.39,
     "USDTRY": 18.732,
     "EURTRY": 19.971
+  },
+  {
+    "Date": "2023-02",
+    "FullDate": 44958,
+    "InflationIndex": 1241.33,
+    "MonthlyInflation": 0.0315,
+    "minWageNetTRY": 8506.8,
+    "minWageGrossTRY": 10750,
+    "minWageNetUSD": 452,
+    "GoldPerGramTRY": 1165.00,
+    "USDTRY": 18.812,
+    "EURTRY": 20.446
+  },
+  {
+    "Date": "2023-03",
+    "FullDate": 44986,
+    "InflationIndex": 1269.75,
+    "MonthlyInflation": 0.0665,
+    "minWageNetTRY": 8506.8,
+    "minWageGrossTRY": 10750,
+    "minWageNetUSD": 450,
+    "GoldPerGramTRY": 1111.00,
+    "USDTRY": 18.882,
+    "EURTRY": 19.996
+  },
+  {
+    "Date": "2023-04",
+    "FullDate": 45017,
+    "InflationIndex": 1300.04,
+    "MonthlyInflation": 0.0665,
+    "minWageNetTRY": 8506.8,
+    "minWageGrossTRY": 10750,
+    "minWageNetUSD": 443,
+    "GoldPerGramTRY": 1211.00,
+    "USDTRY": 19.196,
+    "EURTRY": 20.722
+  },
+  {
+    "Date": "2023-05",
+    "FullDate": 45047,
+    "InflationIndex": 1300.04,
+    "MonthlyInflation": 0.0665,
+    "minWageNetTRY": 8506.8,
+    "minWageGrossTRY": 10750,
+    "minWageNetUSD": 437,
+    "GoldPerGramTRY": 1241.00,
+    "USDTRY": 19.460,
+    "EURTRY": 21.420
   }
 ]

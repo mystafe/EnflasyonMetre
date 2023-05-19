@@ -22,15 +22,15 @@ TimeDetection = (date) => {
   if (date < "1980-01") return 1;
   else if (date < "1999-01") return 2;
   else if (date < "2005-01") return 3;
-  else if (date <= "2023-01") return 4;
+  else if (date <= "2023-05") return 4;
   else return 5;
 };
 
 resetValues.addEventListener("click", (e) => {
   e.preventDefault();
   document.getElementById("amount1").value = 1000;
-  document.getElementById("firstYear").value = "2021-12";
-  document.getElementById("secondYear").value = "2023-01";
+  document.getElementById("firstYear").value = "2022-01";
+  document.getElementById("secondYear").value = "2023-04";
   CompareFunction(1000, true);
 });
 
