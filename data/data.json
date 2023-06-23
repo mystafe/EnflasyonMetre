@@ -6033,5 +6033,17 @@
     "GoldPerGramTRY": 1310.40,
     "USDTRY": 20.760,
     "EURTRY": 22.170
+  },
+  {
+    "Date": "2023-07",
+    "FullDate": 45108,
+    "InflationIndex": 1300.60,
+    "MonthlyInflation": 0.0004,
+    "minWageNetTRY": 11402,
+    "minWageGrossTRY": 13414,
+    "minWageNetUSD": 452,
+    "GoldPerGramTRY": 1557.55,
+    "USDTRY": 25.230,
+    "EURTRY": 27.284
   }
 ]
