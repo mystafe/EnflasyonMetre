@@ -22,14 +22,14 @@ TimeDetection = (date) => {
   if (date < "1980-01") return 1;
   else if (date < "1999-01") return 2;
   else if (date < "2005-01") return 3;
-  else if (date <= "2023-05") return 4;
+  else if (date <= "2024-12") return 4;
   else return 5;
 };
 
 resetValues.addEventListener("click", (e) => {
   e.preventDefault();
   document.getElementById("amount1").value = 1000;
-  document.getElementById("firstYear").value = "2023-05";
+  document.getElementById("firstYear").value = "2024-12";
   document.getElementById("secondYear").value = "2006-01";
   CompareFunction(1000, true);
 });
@@ -148,7 +148,7 @@ CompareFunction = async function (lira, isFirst) {
     minWageAmount1 = parseFloat(liraPrice1 / time1.minWageNetTRY).toFixed(2);
   } else if (!moneyValid1) {
     liraPrice1 = usdPrice1 = eurPrice1 = goldPrice1 = minWagePrice1 = "0";
-    date1 = "2023-05";
+    date1 = "2024-12";
   }
 
   if (moneyValid2) {
