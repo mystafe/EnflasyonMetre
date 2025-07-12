@@ -6249,5 +6249,89 @@
     "GoldPerGramTRY": 2946.06,
     "USDTRY": 34.716,
     "EURTRY": 36.566
+  },
+  {
+    "Date": "2025-01",
+    "FullDate": 45658,
+    "InflationIndex": 2819.65,
+    "MonthlyInflation": 0.0503,
+    "minWageNetTRY": 22104,
+    "minWageGrossTRY": 26005,
+    "minWageNetUSD": 626,
+    "GoldPerGramTRY": 2966,
+    "USDTRY": 35.361,
+    "EURTRY": 36.566
+  },
+  {
+    "Date": "2025-02",
+    "FullDate": 45689,
+    "InflationIndex": 2883.75,
+    "MonthlyInflation": 0.0227,
+    "minWageNetTRY": 17002,
+    "minWageGrossTRY": 20002,
+    "minWageNetUSD": 617,
+    "GoldPerGramTRY": 3230,
+    "USDTRY": 35.857,
+    "EURTRY": 37.266
+  },
+  {
+    "Date": "2025-03",
+    "FullDate": 45717,
+    "InflationIndex": 2954.69,
+    "MonthlyInflation": 0.0246,
+    "minWageNetTRY": 17002,
+    "minWageGrossTRY": 20002,
+    "minWageNetUSD": 605,
+    "GoldPerGramTRY": 3401,
+    "USDTRY": 36.518,
+    "EURTRY": 38.019
+  },
+  {
+    "Date": "2025-04",
+    "FullDate": 45748,
+    "InflationIndex": 3043.23,
+    "MonthlyInflation": 0.0300,
+    "minWageNetTRY": 17002,
+    "minWageGrossTRY": 20002,
+    "minWageNetUSD": 583,
+    "GoldPerGramTRY": 3822,
+    "USDTRY": 37.931,
+    "EURTRY": 40.920
+  },
+  {
+    "Date": "2025-05",
+    "FullDate": 45778,
+    "InflationIndex": 3089.74,
+    "MonthlyInflation": 0.0153,
+    "minWageNetTRY": 17002,
+    "minWageGrossTRY": 20002,
+    "minWageNetUSD": 575,
+    "GoldPerGramTRY": 4005,
+    "USDTRY": 38.474,
+    "EURTRY": 43.757
+  },
+  {
+    "Date": "2025-06",
+    "FullDate": 45809,
+    "InflationIndex": 3132.17,
+    "MonthlyInflation": 0.0137,
+    "minWageNetTRY": 17002,
+    "minWageGrossTRY": 20002,
+    "minWageNetUSD": 563,
+    "GoldPerGramTRY": 4212,
+    "USDTRY": 39.241,
+    "EURTRY": 44.495
+  },
+  {
+    "Date": "2025-07",
+    "FullDate": 45839,
+    "InflationIndex": 3250.65,
+    "MonthlyInflation": 0.0137,
+    "minWageNetTRY": 17002,
+    "minWageGrossTRY": 20002,
+    "minWageNetUSD": 554,
+    "GoldPerGramTRY": 4270,
+    "USDTRY": 39.854,
+    "EURTRY": 47.068
   }
 ]
